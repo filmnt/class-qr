@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Class QR</title>
+<link rel="icon" type="image/gif" href="favicon.gif">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+body {
+margin: 0;
+min-height: 100vh;
+background: #f0f4f8;
+font-family: system-ui, -apple-system, sans-serif;
+padding: 60px 20px 40px;
+box-sizing: border-box;
+}
+.main-container {
+background: white;
+border-radius: 16px;
+box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+padding: 3rem 2.5rem;
+width: 100%;
+max-width: 1300px;
+margin: 0 auto;
+}
+.split-layout {
+display: flex;
+gap: 180px;
+flex-wrap: wrap;
+justify-content: center;
+align-items: flex-start;
+position: relative;
+}
+.column {
+flex: 1;
+min-width: 360px;
+}
+.column h2 {
+margin: 0 0 1.6rem;
+color: #1e293b;
+font-size: 2.4rem;
+font-weight: 700;
+text-align: center;
+letter-spacing: -0.8px;
+}
+.input-group {
+margin-bottom: 1.8rem;
+}
+input[type="text"] {
+width: 100%;
+padding: 16px 18px;
+font-size: 1.15rem;
+border: 2px solid #cbd5e1;
+border-radius: 12px;
+box-sizing: border-box;
+}
+input:focus {
+outline: none;
+border-color: #3b82f6;
+box-shadow: 0 0 0 4px rgba(59,130,246,0.15);
+}
+button {
+width: 100%;
+padding: 16px;
+font-size: 1.2rem;
+font-weight: 700;
+color: white;
+background: #2563eb;
+border: none;
+border-radius: 12px;
+cursor: pointer;
+transition: background 0.2s;
+}
+button:hover:not(:disabled) {
+background: #1d4ed8;
+}
+button:disabled {
+background: #94a3b8;
+cursor: not-allowed;
+}
+.qr-area {
+margin-top: 2rem;
+min-height: 360px;
+display: flex;
+justify-content: center;
+align-items: center;
+background: #f8fafc;
+border-radius: 14px;
+border: 1px dashed #cbd5e1;
+}
+.divider {
+position: absolute;
+top: 0;
+bottom: 0;
+left: 50%;
+width: 2px;
+background: #cbd5e1;
+transform: translateX(-50%);
+}
+@media (max-width: 1100px) {
+.split-layout {
+gap: 80px;
+}
+.divider {
+display: none;
+}
+}
+@media (max-width: 800px) {
+.main-container {
+padding: 2.5rem 1.8rem;
+}
+.split-layout {
+flex-direction: column;
+gap: 70px;
+}
+.column h2 {
+font-size: 2rem;
+}
+}
+</style>
+</head>
+<body>
+
+<div class="main-container">
+<div class="split-layout">
+<div class="column">
+<h2>문제 QR코드</h2>
+<div class="input-group">
+<input type="text" id="leftUrl" placeholder="https://example.com/problem" autofocus>
+</div>
+<button id="leftBtn" disabled>QR코드 생성</button>
+<div class="qr-area" id="leftQr"></div>
+</div>
+<div class="divider"></div>
+<div class="column">
+<h2>제출 QR코드</h2>
+<div class="input-group">
+<input type="text" id="rightUrl" placeholder="https://forms.gle/submit">
+</div>
+<button id="rightBtn" disabled>QR코드 생성</button>
+<div class="qr-area" id="rightQr"></div>
+</div>
+</div>
+</div>
+
+<script>
+const leftUrl = document.getElementById('leftUrl');
+const leftBtn = document.getElementById('leftBtn');
+const leftQr = document.getElementById('leftQr');
+const rightUrl = document.getElementById('rightUrl');
+const rightBtn = document.getElementById('rightBtn');
+const rightQr = document.getElementById('rightQr');
+
+function enableButton(input, btn) {
+btn.disabled = input.value.trim() === '';
+}
+
+leftUrl.addEventListener('input', () => enableButton(leftUrl, leftBtn));
+rightUrl.addEventListener('input', () => enableButton(rightUrl, rightBtn));
+
+leftUrl.addEventListener('keypress', e => {
+if (e.key === 'Enter' && !leftBtn.disabled) generate(leftUrl.value.trim(), leftQr);
+});
+rightUrl.addEventListener('keypress', e => {
+if (e.key === 'Enter' && !rightBtn.disabled) generate(rightUrl.value.trim(), rightQr);
+});
+
+leftBtn.addEventListener('click', () => generate(leftUrl.value.trim(), leftQr));
+rightBtn.addEventListener('click', () => generate(rightUrl.value.trim(), rightQr));
+
+function generate(text, container) {
+if (!text) return;
+container.innerHTML = '';
+const qrcode = new QRCode(container, {
+text: text,
+width: 380,
+height: 380,
+colorDark: "#000000",
+colorLight: "#ffffff",
+correctLevel: QRCode.CorrectLevel.H
+});
+}
+</script>
+</body>
+</html>
