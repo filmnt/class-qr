@@ -19,7 +19,7 @@ box-sizing: border-box;
 background: white;
 border-radius: 16px;
 box-shadow: 0 10px 40px rgba(0,0,0,0.12);
-padding: 3rem 2.5rem;
+padding: 3rem 2.5rem 0.8rem;
 width: 100%;
 max-width: 1300px;
 margin: 0 auto;
@@ -98,6 +98,19 @@ width: 2px;
 background: #cbd5e1;
 transform: translateX(-50%);
 }
+.time-display {
+text-align: center;
+margin: 1.8rem 0 1.2rem;
+font-size: 2.1rem;
+font-weight: 600;
+letter-spacing: 0.5px;
+}
+.time-display .date {
+color: #64748b;
+}
+.time-display .time {
+color: #1d4ed8;
+}
 @media (max-width: 1100px) {
 .split-layout {
 gap: 80px;
@@ -108,7 +121,7 @@ display: none;
 }
 @media (max-width: 800px) {
 .main-container {
-padding: 2.5rem 1.8rem;
+padding: 2.5rem 1.8rem 0.6rem;
 }
 .split-layout {
 flex-direction: column;
@@ -116,6 +129,10 @@ gap: 70px;
 }
 .column h2 {
 font-size: 2rem;
+}
+.time-display {
+font-size: 1.8rem;
+margin: 1.6rem 0 1rem;
 }
 }
 </style>
@@ -136,11 +153,14 @@ font-size: 2rem;
 <div class="column">
 <h2>제출 QR코드</h2>
 <div class="input-group">
-<input type="text" id="rightUrl" placeholder="https://forms.gle/submit">
+<input type="text" id="rightUrl" placeholder="https://forms.gle/xxxxxxxxxx">
 </div>
 <button id="rightBtn" disabled>QR코드 생성</button>
 <div class="qr-area" id="rightQr"></div>
 </div>
+</div>
+<div class="time-display" id="currentTime">
+<span class="date"></span> <span class="time"></span>
 </div>
 </div>
 
@@ -151,6 +171,9 @@ const leftQr = document.getElementById('leftQr');
 const rightUrl = document.getElementById('rightUrl');
 const rightBtn = document.getElementById('rightBtn');
 const rightQr = document.getElementById('rightQr');
+const timeDisplay = document.getElementById('currentTime');
+const dateSpan = timeDisplay.querySelector('.date');
+const timeSpan = timeDisplay.querySelector('.time');
 
 function enableButton(input, btn) {
 btn.disabled = input.value.trim() === '';
@@ -181,6 +204,21 @@ colorLight: "#ffffff",
 correctLevel: QRCode.CorrectLevel.H
 });
 }
+
+function updateTime() {
+const now = new Date();
+const year = now.getFullYear();
+const month = now.getMonth() + 1;
+const date = now.getDate();
+const hours = String(now.getHours()).padStart(2, '0');
+const minutes = String(now.getMinutes()).padStart(2, '0');
+const seconds = String(now.getSeconds()).padStart(2, '0');
+dateSpan.textContent = `${year}. ${month}. ${date}`;
+timeSpan.textContent = `${hours}:${minutes}:${seconds}`;
+}
+
+setInterval(updateTime, 1000);
+updateTime();
 </script>
 </body>
 </html>
